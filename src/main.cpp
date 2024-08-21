@@ -3,9 +3,7 @@
 #include "LinkedList.h"
 #include "User.h"
 
-int main() {
-    LinkedList<User> users;
-
+void registerUser(LinkedList<User>& users) {
     std::string email, password;
 
     std::cout << "Registro de usuario" << std::endl;
@@ -22,17 +20,9 @@ int main() {
     } else {
         std::cout << "El usuario ya existe." << std::endl;
     }
-
-    return 0;
 }
 
-
-int main() {
-    LinkedList<User> users;
-
-    // Agregar usuarios predefinidos para pruebas
-    users.add(User("test@example.com", "password123"));
-
+void loginUser(LinkedList<User>& users) {
     std::string email, password;
 
     std::cout << "Inicio de sesión" << std::endl;
@@ -48,6 +38,19 @@ int main() {
     } else {
         std::cout << "Credenciales incorrectas." << std::endl;
     }
+}
+
+int main() {
+    LinkedList<User> users;
+
+    // Ejemplo de usuario predefinido para pruebas
+    users.add(User("test@example.com", "password123"));
+
+    // Llamar a la función de registro
+    registerUser(users);
+
+    // Llamar a la función de inicio de sesión
+    loginUser(users);
 
     return 0;
 }

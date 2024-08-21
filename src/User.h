@@ -1,4 +1,3 @@
-// User.h
 #ifndef USER_H
 #define USER_H
 
@@ -10,10 +9,12 @@ private:
     std::string password;
 
 public:
-    User(const std::string& email, const std::string& password);
+    User(const std::string& email, const std::string& password);  // Declaración del constructor
 
     std::string getEmail() const;
     std::string getPassword() const;
+
+    bool operator==(const User& other) const;  // Declaración del operador ==
 };
 
 #endif // USER_H
