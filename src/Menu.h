@@ -13,6 +13,8 @@
 #include "Publicacion.h"      
 #include "NodoPublicacion.h"  
 #include "ListaPublicaciones.h"  
+#include "ListaDoble.h"
+
 
 //#include <nlohmann/json.hpp/src>
 //#include <nlohmann/json.hpp/src>
@@ -33,8 +35,8 @@ class Menu
 private:
     ListaSimple listaUsuarios;
     NodoListaSimple *usuarioActual; // Puntero al nodo del usuario actual
-    ListaPublicaciones listaPublicaciones; // Para almacenar las publicaciones
-    NodoPublicacion *publicacionActual;     // Puntero al nodo de la publicación actual
+    ListaDoble listaPublicaciones;
+    NodoListaDoble *publicacionActual; // Puntero al nodo de la publicación actual
 
 
 public:
@@ -60,13 +62,14 @@ public:
     void aceptarSolicitud();  
     void rechazarSolicitud(); 
     void salir();
+    
 };
 
-void Menu::cargarPublicacionesDesdeJSON()
+void Menu::cargarPublicacionesDesdeJSON(ListaDoble &listaPublicaciones)
 {
     string path;
-    cout << "Direccion del archivo: ";
-    getline(cin >> ws, path);  // Asegura que se lea el path correctamente.
+    cout << "Dirección del archivo: ";
+    getline(cin >> ws, path);  // Para leer la ruta correctamente.
 
     ifstream archivo(path);
     if (!archivo.is_open())
@@ -86,18 +89,18 @@ void Menu::cargarPublicacionesDesdeJSON()
 
     for (const auto &item : datosJSON)
     {
-        // Verificar que los campos existan antes de acceder a ellos
-        if (item.contains("correo") && item.contains("contenido") && 
+        // Verificar que todos los campos existan antes de usarlos
+        if (item.contains("correoUsuario") && item.contains("contenido") && 
             item.contains("fecha") && item.contains("hora"))
         {
-            string correo = item["correo"];
+            string correo = item["correoUsuario"];
             string contenido = item["contenido"];
             string fecha = item["fecha"];
             string hora = item["hora"];
 
-            // Crear una nueva publicación y agregarla a la lista de publicaciones
+            // Crear una nueva publicación y agregarla a la lista doblemente enlazada
             Publicacion nuevaPublicacion(correo, contenido, fecha, hora);
-            listaPublicaciones.agregarPublicacion(nuevaPublicacion);
+            listaPublicaciones.insertarFinal(nuevaPublicacion);
         }
         else
         {
@@ -108,21 +111,10 @@ void Menu::cargarPublicacionesDesdeJSON()
     archivo.close();
     cout << "Carga masiva de publicaciones exitosa." << endl;
 
-    // Imprimir las publicaciones cargadas
-    NodoPublicacion* actual = listaPublicaciones.getCabeza();
-    int indice = 1;
-    while (actual != nullptr)
-    {
-        cout << "Publicación " << indice << ": " << endl;
-        cout << "Correo: " << actual->publicacion.getCorreoUsuario() << endl;
-        cout << "Contenido: " << actual->publicacion.getContenido() << endl;
-        cout << "Fecha: " << actual->publicacion.getFecha() << endl;
-        cout << "Hora: " << actual->publicacion.getHora() << endl;
-        cout << "-------------------------------" << endl;
-        actual = actual->siguiente;
-        indice++;
-    }
+    // Imprimir los datos de las publicaciones cargadas
+    listaPublicaciones.imprimirPublicaciones();
 }
+
 
 
 void Menu::cargarUsuariosDesdeJSON()
